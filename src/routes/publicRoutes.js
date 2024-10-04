@@ -7,6 +7,7 @@ router.get('/properties', propertyController.getAllProperties);
 
 // Route to create a new property
 router.post('/properties', propertyController.createProperty);
+router.post('/properties/filter', propertyController.filterProperty);
 
 // Route to get a property by ID
 router.get('/properties/:id', propertyController.getPropertyById);

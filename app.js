@@ -44,7 +44,6 @@ app.use("/api/v1",publicRoute);
 
 // Private Routes
 
-// app.use("/api/v1",privateRoute);
 
 
 
