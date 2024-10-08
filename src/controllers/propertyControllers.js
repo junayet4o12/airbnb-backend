@@ -20,10 +20,12 @@ const getAllProperties = async (req, res) => {
 
 const filterProperty = async (req, res) => {
   try {
-    const { location, checkIn, checkout, category, adults, children, infants, pets } = req.body;
-    console.log(req.body);
-
-
+    const { location, checkIn, checkout, category, adults, children, infants, pets, price, type, roomsAndBeds, amenities } = req.body;
+    const { room, bed, bathroom } = roomsAndBeds;
+    const { wifi, kitchen, washer } = amenities;
+    let { min = 0, max = 550 } = price;
+    min = min === null ? 0 : min;
+    max = max === null ? 550 : max;
     const query = {};
 
 
@@ -41,8 +43,20 @@ const filterProperty = async (req, res) => {
       if (infants) query['acceptableGuestAmount.infants'] = { $gte: infants };
       if (pets) query['acceptableGuestAmount.pets'] = { $gte: pets };
     }
+    query['roomsAndBeds.rooms'] = { $gte: room };
+    query['roomsAndBeds.beds'] = { $gte: bed };
+    query['roomsAndBeds.bathrooms'] = { $gte: bathroom };
 
+    if (wifi || kitchen || washer) {
+      if (wifi) query['amenities.wifi'] = true;
+      if (kitchen) query['amenities.kitchen'] = true;
+      if (washer) query['amenities.washer'] = true;
 
+    }
+    if (type && type !== 'anyType') {
+      query.typeOfPlace = type;
+    }
+    query.pricePerNight = { $gte: min, $lte: max };
     let properties = await Property.find(query);
 
     if (checkIn) {
